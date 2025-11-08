@@ -54,7 +54,13 @@ public final class Transformers {
      * @return A transformed list where each input element is replaced with the produced elements
      */
     public static <I, O> List<O> transform(final Iterable<I> base, final Function<I, O> transformer) {
-        return null;
+        
+        final var result = new ArrayList<O>();
+        for (final I input : Objects.requireNonNull(base, "The base iterable cannot be null")) {
+            O transformed = transformer.call(input);
+            result.add(transformed);
+        }
+        return result;
     }
 
     /**
@@ -70,7 +76,15 @@ public final class Transformers {
      * @return A flattened list with the elements of each collection in the input
      */
     public static <I> List<? extends I> flatten(final Iterable<? extends Collection<? extends I>> base) {
-        return null;
+        
+        final var result = new ArrayList<I>();
+
+        for (final Collection<? extends I> input : base){
+            for (final I element : input){
+                result.add(element);
+            }               
+        }
+        return result;    
     }
 
     /**
@@ -79,7 +93,7 @@ public final class Transformers {
      * For instance, {@code [1, 2, 3, 4, 5]} could use {@code select} to filter only the odd numbers, thus obtaining
      * {@code [1, 3, 5]}.
      * <b>NOTE:</b> this function is a special flattenTransform whose function returns a list with a single element if
-     * the element passes the test, and an empty list otherwise.
+     * the element passes the test, and an empty list otherwise. 
      *
      * @param base the elements on which to operate
      * @param test the {@link Function} to use to test whether the elements should be selected.
@@ -87,7 +101,7 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> select(final Iterable<I> base, final Function<I, Boolean> test) {
-        return null;
+        return flattenTransform(base, x -> test.call(x) ? List.of(x) : List.of());
     }
 
     /**
@@ -103,6 +117,6 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> reject(final Iterable<I> base, final Function<I, Boolean> test) {
-        return null;
+        return flattenTransform(base, x -> !test.call(x) ? List.of(x) : List.of());
     }
 }
