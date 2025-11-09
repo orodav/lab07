@@ -5,7 +5,12 @@ import it.unibo.bank.api.BankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static it.unibo.bank.impl.StrictBankAccount.TRANSACTION_FEE;
+import static it.unibo.bank.impl.StrictBankAccount.MANAGEMENT_FEE;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import javax.swing.plaf.basic.BasicBorders.MarginBorder;
@@ -44,9 +49,12 @@ class TestStrictBankAccount {
      */
     @Test
     public void testManagementFees() {
+        assertEquals(0, bankAccount.getTransactionsCount());
         bankAccount.deposit(mRossi.getUserID(), DEPOSIT);
+        assertEquals(1, bankAccount.getTransactionsCount());
         assertEquals(DEPOSIT, bankAccount.getBalance());
         bankAccount.chargeManagementFees(mRossi.getUserID());
+        assertEquals(DEPOSIT - TRANSACTION_FEE - MANAGEMENT_FEE, bankAccount.getBalance());
         
     }
 
@@ -55,7 +63,12 @@ class TestStrictBankAccount {
      */
     @Test
     public void testNegativeWithdraw() {
-        fail("To be implemented");
+        try{
+            bankAccount.withdraw(mRossi.getUserID(), -DEPOSIT);
+        } catch (IllegalArgumentException e){
+            assertNotNull(e.getMessage());
+            assertFalse(e.getMessage().isBlank());
+        }
     }
 
     /**
@@ -63,6 +76,11 @@ class TestStrictBankAccount {
      */
     @Test
     public void testWithdrawingTooMuch() {
-        fail("To be implemented");
+        try {
+            bankAccount.withdraw(mRossi.getUserID(), DEPOSIT);
+        } catch (IllegalArgumentException e){
+            assertNotNull(e.getMessage());
+            assertFalse(e.getMessage().isBlank());
+        }
     }
 }
