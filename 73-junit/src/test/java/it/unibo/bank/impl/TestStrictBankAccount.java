@@ -5,13 +5,17 @@ import it.unibo.bank.api.BankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import javax.swing.plaf.basic.BasicBorders.MarginBorder;
 
 /**
  * Test class for the {@link StrictBankAccount} class.
  */
 class TestStrictBankAccount {
 
+    private static final int DEPOSIT = 100;
     // Create a new AccountHolder and a StrictBankAccount for it each time tests are executed.
     private AccountHolder mRossi;
     private BankAccount bankAccount;
@@ -21,7 +25,8 @@ class TestStrictBankAccount {
      */
     @BeforeEach
     public void setUp() {
-        fail("To be implemented");
+        mRossi = new AccountHolder("Mario", "Rossi", 1);
+        bankAccount = new StrictBankAccount(mRossi, 0);
     }
 
     /**
@@ -29,7 +34,9 @@ class TestStrictBankAccount {
      */
     @Test
     public void testInitialization() {
-        fail("To be implemented");
+        assertEquals(mRossi, bankAccount.getAccountHolder());
+        assertEquals(0.0, bankAccount.getBalance());
+        assertEquals(0, bankAccount.getTransactionsCount());
     }
 
     /**
@@ -37,7 +44,10 @@ class TestStrictBankAccount {
      */
     @Test
     public void testManagementFees() {
-        fail("To be implemented");
+        bankAccount.deposit(mRossi.getUserID(), DEPOSIT);
+        assertEquals(DEPOSIT, bankAccount.getBalance());
+        bankAccount.chargeManagementFees(mRossi.getUserID());
+        
     }
 
     /**
